@@ -1,8 +1,13 @@
 ---
-title: zookeeper 实战
-notebook: 日常
-tags:笔记
+title:      zookeeper 实战
+layout:     post
+subtitle:   "zookeeper 实战"
+date:       2015-10-22
+author:     "Pymjer"
+header-img: "img/post-bg-unix-linux.jpg"
+tags: ["zookeeper"]
 ---
+
 Zookeeper环境搭建
 =================
 下载

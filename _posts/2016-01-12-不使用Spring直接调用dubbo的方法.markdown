@@ -1,8 +1,13 @@
 ---
-title: 不使用Spring直接调用dubbo的方法
-tags: []
-notebook: java
+title:      不使用Spring直接调用dubbo的方法
+layout:     post
+subtitle:   "不使用Spring直接调用dubbo的方法"
+date:       2016-01-12
+author:     "Pymjer"
+header-img: "img/post-bg-unix-linux.jpg"
+tags: ["dubbo"]
 ---
+
 Dubbo 可以通过api直接调用
 ==================
 有时候项目里面不使用spring，但是还是需要调用dubbo，可以通过api实现

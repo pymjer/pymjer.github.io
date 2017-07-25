@@ -1,8 +1,14 @@
 ---
-title: kafka 实战
-notebook: 日常
-tags:笔记
+title:      kafka 实战
+layout:     post
+subtitle:   "kafka 使用记录"
+date:       2015-07-09
+author:     "Pymjer"
+header-img: "img/post-bg-unix-linux.jpg"
+tags: ["kafka"]
+notebook: 工具
 ---
+
 环境搭建
 ================
 下载解压

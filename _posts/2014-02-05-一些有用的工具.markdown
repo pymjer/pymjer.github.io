@@ -1,8 +1,17 @@
 ---
-title: 一些有用的工具
-tags: []
+title:      一些有用的工具
+layout:     post
+subtitle:   "长期搜集能提高生产力，减少码农工作量的工具"
+date:       2014-02-05
+author:     "Pymjer"
+header-img: "img/post-bg-unix-linux.jpg"
+tags:
+    - 工具
 notebook: 工具
 ---
+
+> 工欲善其事，必先利其器
+
 etherpad 多人同时在线编辑文档
 ================
 多人同时在线编辑同一文档[etherpad](https://etherpad.net/) [具体信息](http://www.oschina.net/p/etherpad?from=rss)

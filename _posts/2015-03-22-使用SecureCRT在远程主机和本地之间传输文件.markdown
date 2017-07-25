@@ -1,8 +1,14 @@
 ---
-title: 使用SecureCRT在远程主机和本地之间传输文件
+title:      使用SecureCRT在远程主机和本地之间传输文件
+layout:     post
+subtitle:   "SecureCRT 命令使用"
+date:       2015-03-22
+author:     "Pymjer"
+header-img: "img/post-bg-unix-linux.jpg"
 tags: ["ssh"]
 notebook: 工具
 ---
+
 使用SecureCRT在远程主机和本地之间传输文件
 =================
 SecureCRT与SshClient不同的就是，SecureCRT没有图形化的文件传输工具，不过也不影响，用命令来实现的话，其实会方便快捷很多。
