@@ -1,0 +1,83 @@
+---
+title: 一些有用的工具
+tags: []
+notebook: 工具
+---
+etherpad 多人同时在线编辑文档
+================
+多人同时在线编辑同一文档[etherpad](https://etherpad.net/) [具体信息](http://www.oschina.net/p/etherpad?from=rss)
+
+Etherpad 是一个线上共制平台，三、四个人可以坐在自己电脑前，同时对一份文件修改，也同时看到其他人的修改，不必锁文件或什么
+
+Java代码静态分析工具
+================
+Java代码错误检测工具 PMD [学习PMD的使用](http://blog.csdn.net/sadamdiyi/article/details/6073694)
+另外还有 CheckStyle和FindBugs
+
+jconsole Java性能分析工具 
+===============
+[学习jconsole使用](http://jiajun.iteye.com/blog/810150)
+  
+VisualVM - jvm分析工具
+===============
+[学习VisualVM的使用](https://visualvm.java.net/zh_CN/gettingstarted.html?Java_VisualVM)
+
+Kotlin - JVM 的新的编程语言
+===============
+Kotlin 是一个基于 JVM 的新的编程语言，由 [JetBrains](http://baike.baidu.com/view/1980886.htm) 开发。  
+[首页](http://kotlinlang.org/)
+
+tracemap - 在线测定路由信息  
+==============
+[在线工具](http://www.linkwan.com/gb/broadmeter/tracemap/traceroute.asp)
+
+Wireshark - 网络封包分析软件
+===============
+（前称Ethereal）是一个网络封包分析软件。  
+[下载](https://www.wireshark.org/download.html)  
+网络封包分析软件的功能是撷取网络封包，并尽可能显示出最为详细的网络封包资料。Wireshark使用WinPCAP作为接口，直接与网卡进行数据报文交换。
+
+jsconsole - 一个很好的调试js的工具  
+===============
+[主页](http://jsconsole.com/)  
+可以注入一个url   
+    
+    :load <url> \- to inject new DOM
+
+codechat - 与他人在线交流代码的好地方  
+===============
+[地址](http://codechat.net/)
+
+codingame - 通过游戏学习编程
+==============
+[codingame](https://www.codingame.com/start) 谷歌账户登录
+
+> [参见](http://blog.jobbole.com/92553/)
+
+strml - 一个前端牛人的简历
+================
+[参加: 主页](http://strml.net/)
+
+ModSecurity - Web服务防火墙
+===============
+[参见](http://netsecurity.51cto.com/art/201004/195250.htm)
+
+Bootlint - 可以检测出Bootstrap 项目存在问题的工具
+================
+[参见：github](https://github.com/twbs/bootlint)
+
+可以通过gruntjs安装或者命令行方法
+
+ideacolorthemes - idea主题
+============
+[参见](http://www.ideacolorthemes.org/)
+
+sheyun - 检查你的密码是否泄露
+================
+http://www.shunmay.cn/  
+http://www.sheyun.org/index.html  
+
+Velocity|devdocs - 离线文档查看工具
+===============
+http://velocity.silverlakesoftware.com/  
+http://devdocs.io/

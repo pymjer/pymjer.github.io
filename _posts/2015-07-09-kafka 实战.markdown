@@ -1,0 +1,200 @@
+---
+title: kafka 实战
+notebook: 日常
+tags:笔记
+---
+环境搭建
+================
+下载解压
+
+    $ wget http://mirrors.hust.edu.cn/apache/kafka/0.9.0.1/kafka_2.10-0.9.0.1.tgz  
+    $ tar -xzf kafka_2.10-0.9.0.1.tgz  
+    $ cd kafka_2.10-0.9.0.1  
+
+Kafka配置`config/server.properties`
+
+    ############################# Zookeeper #############################
+
+    # Zookeeper connection string (see zookeeper docs for details).
+    # This is a comma separated host:port pairs, each corresponding to a zk
+    # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+    # You can also append an optional chroot string to the urls to specify the
+    # root directory for all kafka znodes.
+    zookeeper.connect=localhost:2181
+
+启动Kafka
+
+    $ ./bin/kafka-server-start.sh config/server.properties
+
+创建topic
+
+    $ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+    Created topic "test".
+
+producer发送消息
+
+    $ bin/kafka-console-producer.sh --broker-list localhost:9092 --topic test 
+    This is a messageThis is another message
+
+consumer消费消息
+
+    $ bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic test --from-beginning
+    This is a message
+    This is another message
+
+搭建一个多个broker的集群
+===================
+修改配置文件
+
+    config/server-1.properties:
+        broker.id=1
+        port=9093
+        host.name=192.168.8.152
+        log.dir=/tmp/kafka-logs-1
+
+创建一个拥有3个副本的topic:
+
+    $ bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 1 --topic my-replicated-topic
+
+producer发送消息
+
+    $ bin/kafka-console-producer.sh --broker-list 192.168.8.152:9092,192.168.8.153:9092,192.168.8.154:9092 --topic my-replicated-topic
+    This is a message
+    This is another message
+
+consumer消费消息
+
+    $ bin/kafka-console-consumer.sh --zookeeper 192.168.8.154:2181 --topic my-replicated-topic --from-beginning
+    This is a message
+    This is another message
+
+查看节点信息
+
+    $ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
+    Topic:my-replicated-topic       PartitionCount:1        ReplicationFactor:3     Configs:
+        Topic: my-replicated-topic      Partition: 0    Leader: 0       Replicas: 0,2,3 Isr: 0,2,3
+
+测试容错能力，kill掉leader节点
+    
+    # kill Leader
+    $ kill -9 23234
+    INFO [Kafka Server 0], shut down completed (kafka.server.KafkaServer)
+
+    # 查看日志
+    $ tail -f logs/server.log 
+    [2017-03-08 02:42:23,534] INFO Creating /controller (is it secure? false) (kafka.utils.ZKCheckedEphemeral)
+    [2017-03-08 02:42:23,538] INFO Result of znode creation is: OK (kafka.utils.ZKCheckedEphemeral)
+    [2017-03-08 02:42:23,541] INFO 2 successfully elected as leader (kafka.server.ZookeeperLeaderElector)
+    [2017-03-08 02:42:23,777] INFO New leader is 2 (kafka.server.ZookeeperLeaderElector$LeaderChangeListener)
+
+    # 查看topic状态
+    $ bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
+    Topic:my-replicated-topic       PartitionCount:1        ReplicationFactor:3     Configs:
+            Topic: my-replicated-topic      Partition: 0    Leader: 2       Replicas: 0,2,3 Isr: 2
+
+    # 验证数据没有丢失
+    $ ./bin/kafka-console-consumer.sh --zookeeper localhost:2181 --topic my-replicated-topic --from-beginning
+
+验证Kafka的partition与replication机制
+=====================
+创建一个拥有三个分区，两个备份的topic：`partition-test`
+
+    $ ./bin/kafka-topics.sh --create --zookeeper 192.168.8.154:2181 --topic partition-test --replication-factor 2 --partitions 3
+    Created topic "partition-test".
+
+查看topic状态
+
+    $ ./bin/kafka-topics.sh --describe --topic partition-test --zookeeper 192.168.8.154:2181
+    Topic:partition-test    PartitionCount:3        ReplicationFactor:2     Configs:
+            Topic: partition-test   Partition: 0    Leader: 0       Replicas: 0,2   Isr: 0,2
+            Topic: partition-test   Partition: 1    Leader: 2       Replicas: 2,3   Isr: 2,3
+            Topic: partition-test   Partition: 2    Leader: 3       Replicas: 3,0   Isr: 3,0
+
+启动Provider时发生LEADER_NOT_AVAILABLE问题
+=========================
+具体信息如下
+
+    [2017-03-08 01:28:09,730] WARN Error while fetching metadata with correlation id 28 : {my-replicated-topic=LEADER_NOT_AVAILABLE} (org.apache.kafka.clients.NetworkClient)
+    
+google提示需要修改配置`advertised.host.name`
+
+    # Hostname the broker will advertise to producers and consumers. If not set, it uses the
+    # value for "host.name" if configured.  Otherwise, it will use the value returned from
+    # java.net.InetAddress.getCanonicalHostName().
+    #advertised.host.name=<hostname routable by clients>
+
+该配置的意思是broker在zookeeper上注册的地址，如果没有设置，默认是host.name
+
+未修改前查看zk注册的值
+
+    [zk: 192.168.8.154:2181(CONNECTED) 12] get /brokers/ids/3 
+    {"jmx_port":-1,"timestamp":"1488960515235","endpoints":["PLAINTEXT://slave3:9092"],"host":"slave3","version":2,"port":9092}
+    cZxid = 0x52
+    ctime = Wed Mar 08 00:08:34 PST 2017
+    mZxid = 0x52
+    mtime = Wed Mar 08 00:08:34 PST 2017
+    pZxid = 0x52
+    cversion = 0
+    dataVersion = 0
+    aclVersion = 0
+    ephemeralOwner = 0x15aacc29b20000b
+    dataLength = 123
+    numChildren = 0
+
+未修改前打印的日志
+
+    Registered broker 2 at path /brokers/ids/2 with addresses: PLAINTEXT -> EndPoint(slave2,9092,PLAINTEXT) (kafka.utils.ZkUtils)
+
+修改后打印的日志
+
+    Registered broker 2 at path /brokers/ids/2 with addresses: PLAINTEXT -> EndPoint(192.168.8.152,9092,PLAINTEXT) (kafka.utils.ZkUtils)
+
+consumer delivery guarantee
+===================
+有这几种可能
+
+- At most once 消息可能会丢，但绝不会重复传输
+- At least one 消息绝不会丢，但可能会重复传输(默认)
+- Exactly once 每条消息肯定会被传输一次且仅传输一次，很多时候这是用户所想要的。
+
+问题：如何实现Exactly once?
+
+topic注册信息（/brokers/topics/[topic]）
+========================
+存储该Topic的所有Partition的所有Replica所在的Broker id，第一个Replica即为Preferred Replica，对一个给定的Partition，它在同一个Broker上最多只有一个Replica,因此Broker id可作为Replica id。数据结构如下
+
+    [zk: localhost:2181(CONNECTED) 23] get /brokers/topics/partition-test
+    {"version":1,"partitions":{"2":[3,0],"1":[2,3],"0":[0,2]}}
+
+数据可靠性保证
+=====================
+当Producer向Leader发送数据时,可以通过`request.required.acks`参数设置数据可靠性的级别,其值可设置如下
+
+- `0`: 不论写入是否成功,server不需要给Producer发送Response,如果发生异常,server会终止连接,触发Producer更新meta数据;
+- `1`: Leader写入成功后即发送Response,此种情况如果Leader fail,会丢失数据
+- `-1`: 等待所有ISR接收到消息后再给Producer发送Response,这是最强保证 
+仅设置acks=-1也不能保证数据不丢失,当Isr列表中只有Leader时,同样有可能造成数据丢失。要保证数据不丢除了设置acks=-1, 还要保 证ISR的大小大于等于2
+
+具体参数设置:
+
+1.request.required.acks:设置为-1 等待所有ISR列表中的Replica接收到消息后采算写成功;
+
+2.min.insync.replicas: 设置为大于等于2,保证ISR中至少有两个Replica 
+Producer要在吞吐率和数据可靠性之间做一个权衡
+
+数据一致性保证
+=======================
+一致性定义:若某条消息对Consumer可见,那么即使Leader宕机了,在新Leader上数据依然可以被读到
+
+1. HighWaterMark简称HW: Partition的高水位，取一个partition对应的ISR中最小的LEO作为HW，消费者最多只能消费到HW所在的位置，另外每个replica都有highWatermark，leader和follower各自负责更新自己的highWatermark状态，highWatermark <= leader. LogEndOffset
+
+2. 对于Leader新写入的msg，Consumer不能立刻消费，Leader会等待该消息被所有ISR中的replica同步后,更新HW,此时该消息才能被Consumer消费，即Consumer最多只能消费到HW位置
+这样就保证了如果Leader Broker失效,该消息仍然可以从新选举的Leader中获取。对于来自内部Broker的读取请求,没有HW的限制。同时,Follower也会维护一份自己的HW,Folloer.HW = min(Leader.HW, Follower.offset)
+
+
+Kafka Broker HA机制
+=======================
+HA的缓存分为生产缓存事件池和拉取缓存事件池两块结构相同的缓存区，分别缓存生产和拉取请求 
+
+- 生产缓存事件池：当生产者设置了等待从partition的同步选项(requiredAcks为-1)时才会启动生产缓存。因为每一批生产的消息，需要等待所有的处于同步状态的从partition（in-sync）同步成功，在所有follow partition上报自己的水位线追上leader partition之前，生产请求会一直保留在生产缓存中，等待直到超时。
+- 拉取缓存事件池：拉取请求为什么也需要缓存？因为kafka在消费消息时有一个默认选项，一次拉取最低消费1条消息。那么，如果消费者拉取的时候没有任何新消息生产，则拉取请求会保留到拉取缓存中，等待直到超时。这一定程度上避免了反复拉取一批空消息占用带宽资源的问题，不过也把Kafka的ha缓存架构的复杂度提升了一个等级。
