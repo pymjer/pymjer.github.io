@@ -6,7 +6,10 @@ email: jzbgfeng@gmail.com
 description: ""
 keyword: ""
 # url: "http://huangxuan.me"              # your host, for absolute URL
-baseurl: "/"         # for example, '/blog' if your blog hosted on 'host/blog'
+url:
+# for example, '/blog' if your blog hosted on 'host/blog'
+baseurl:
+
 
 
 
