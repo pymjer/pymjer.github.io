@@ -1,6 +1,6 @@
 # Site settings
 title: Your Blog
-SEOTitle: 你的博客 | Your Blog
+SEOTitle: Pymjer 的博客 | Pymjer Blog
 header-img: img/home-bg.jpg
 email: jzbgfeng@gmail.com
 description: ""
@@ -50,29 +50,29 @@ kramdown:
 
 
 # Disqus settings
-#disqus_username: _your_disqus_short_name_
+disqus_username: fengvm
 
 # Duoshuo settings
-duoshuo_username: huxblog
+# duoshuo_username: pymjer
 # Share component is depend on Comment so we can NOT use share only.
-duoshuo_share: true                     # set to false if you want to use Comment without Sharing
+# duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
 
 
 
 # Analytics settings
 # Baidu Analytics
-ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
+# ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
 # Google Analytics
-ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
-ga_domain: huangxuan.me
+# ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
+# ga_domain: prolion.top
 
 
 
 # Sidebar settings
 sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "写写代码，做做设计，看看产品。世界那么大，多玩玩看看。"
-sidebar-avatar: /img/avatar-hux.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
+sidebar-about-description: "吃饭，睡觉，码代码。希望能码出能自己码自己的代码"
+sidebar-avatar: /img/avatar-hj.jpg      # use absolute URL, seeing it's used in both `/` and `/about/`
 
 
 
